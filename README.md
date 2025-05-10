@@ -52,3 +52,9 @@ export default tseslint.config({
   },
 })
 ```
+
+## AI Agent Changelog
+
+**2025-09-05:**
+- **NFT Descriptions Fixed:** Successfully implemented dynamic fetching and display of NFT descriptions in the `DropCard` component. Descriptions are now visible on the marketplace cards. This is a good checkpoint; the application is rendering correctly with this feature.
+- **Card Layout:** Adjusted card layout for better desktop presentation (fixed 3-column grid). Full responsiveness for mobile/tablet column counts deferred. Favicon updated to use the site logo.
