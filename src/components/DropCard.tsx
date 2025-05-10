@@ -1,50 +1,78 @@
 import * as React from 'react';
-import type { NftData } from '../types'; // Error 1: Use type-only import
+import { useState, useEffect } from 'react';
+import type { NftData } from '../types';
 import { ClaimButton, MediaRenderer } from 'thirdweb/react';
-import { type ThirdwebClient } from 'thirdweb'; // Removed getContract
-import { polygon } from 'thirdweb/chains'; // Error 3: Import polygon chain
-// import { client } from '../main'; // Error 2: We will ensure client is passed via props or context later
+import { type ThirdwebClient, getContract } from 'thirdweb'; // Added getContract
+import { polygon } from 'thirdweb/chains';
+import { getNFT } from "thirdweb/extensions/erc1155"; // Added getNFT
 
 interface DropCardProps {
   nft: NftData;
-  client: ThirdwebClient; // Pass client as a prop for now
+  client: ThirdwebClient;
 }
 
-const DropCard: React.FC<DropCardProps> = ({ nft, client }) => { // Add client to props
-  // Prepare the contract object if needed for other operations, or pass address directly
-  // For ClaimButton v5, often contractAddress is sufficient if client/chain are in Provider context
-  // However, MediaRenderer also needs the client.
-  // const contractForClaimButton = getContract({ // Error 3: Add chain
-  //   client: client,
-  //   address: nft.editionContractAddress,
-  //   chain: polygon,
-  // });
+const DropCard: React.FC<DropCardProps> = ({ nft, client }) => {
+  const [fetchedDescription, setFetchedDescription] = useState<string | undefined>(undefined);
+  const [isLoadingDescription, setIsLoadingDescription] = useState<boolean>(true);
+  const [errorDescription, setErrorDescription] = useState<string | null>(null);
 
-  // Placeholder for split recipient - this would ideally be fetched or part of NftData
-  const displaySplitRecipient = nft.splitContractAddress; // Simplified for now
+  useEffect(() => {
+    const fetchNftDescription = async () => {
+      if (!nft.editionContractAddress || !client) {
+        setIsLoadingDescription(false);
+        return;
+      }
+      setIsLoadingDescription(true);
+      setErrorDescription(null);
+      try {
+        const contract = getContract({
+          client,
+          chain: polygon,
+          address: nft.editionContractAddress,
+        });
+        // Assuming tokenId is 0n based on data structure and common practice for these drops
+        const nftMetadata = await getNFT({
+          contract,
+          tokenId: 0n, 
+        });
+        setFetchedDescription(nftMetadata.metadata.description || "No description available.");
+      } catch (error) {
+        console.error("Error fetching NFT description:", error);
+        setErrorDescription("Could not load description.");
+      } finally {
+        setIsLoadingDescription(false);
+      }
+    };
+
+    fetchNftDescription();
+  }, [nft.editionContractAddress, client]); // Removed nft.tokenUri as contractAddress is key for getContract
+
+  const displaySplitRecipient = nft.splitContractAddress;
 
   return (
-    // Styles like background, shadow, transform are now handled by 'card-base' in App.tsx
-    // Keep 'group' for image hover effects and 'overflow-hidden'
-    <div className="group overflow-hidden h-full flex flex-col"> {/* Ensure card takes full height of grid cell and content flows correctly */}
-      <div className="aspect-square w-full overflow-hidden rounded-t-lg"> {/* Keep rounded top for image */}
-        {/* Using Thirdweb's MediaRenderer for robust media display */}
+    <div className="group overflow-hidden h-full flex flex-col">
+      <div className="aspect-square w-full overflow-hidden rounded-t-lg">
         <MediaRenderer
           client={client}
           src={nft.image}
           alt={nft.name}
-          className="object-cover w-full h-full transition-transform duration-500 ease-in-out group-hover:scale-110" // Image hover effect
+          className="object-cover w-full h-full transition-transform duration-500 ease-in-out group-hover:scale-110"
         />
       </div>
-      {/* Added flex-grow to allow this section to fill space, pushing button to bottom if card heights vary */}
-      <div className="p-6 flex flex-col flex-grow"> 
+      <div className="p-6 flex flex-col flex-grow">
         <h3 className="text-2xl font-bold text-slate-100 mb-2 truncate" title={nft.name}>
           {nft.name}
         </h3>
-        {nft.description && ( // Assuming description will be fetched and populated later
-          <p className="text-slate-400 text-sm mb-3 h-10 overflow-hidden text-ellipsis">
-            {nft.description}
-          </p>
+        {isLoadingDescription ? (
+          <p className="text-slate-500 text-sm mb-3">Loading description...</p>
+        ) : errorDescription ? (
+          <p className="text-red-500 text-sm mb-3">{errorDescription}</p>
+        ) : (
+          fetchedDescription && (
+            <p className="text-slate-400 text-sm mb-3">
+              {fetchedDescription}
+            </p>
+          )
         )}
         <div className="mb-4">
           <p className="text-lg font-semibold text-cyan-400"> {/* Price color updated */}

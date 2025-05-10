@@ -29,10 +29,10 @@ function App() {
         />
       </header>
 
-      <main className="w-full max-w-7xl px-4 sm:px-6 lg:px-8">
+      <main className="w-full max-w-7xl px-4 sm:px-6 lg:px-8"> {/* Reverted: max-w-7xl restored, grid classes on inner div */}
         {/* Apply .card-base to each DropCard for the new card styling and animations */}
-        {/* Changed grid to always be 3 columns and increased gap */}
-        <div className="grid grid-cols-3 gap-16"> {/* Increased gap */}
+        {/* Reverted to simplified 3-column layout for desktop stability */}
+        <div className="grid grid-cols-3 gap-8">
           {allNftsData.map((nft) => (
             <div key={nft.id} className="card-base"> {/* Wrap DropCard in a div with .card-base */}
               <DropCard nft={nft} client={client} />
