@@ -55,6 +55,19 @@ export default tseslint.config({
 
 ## AI Agent Changelog
 
+**2025-10-05:**
+- **AI Chatbot Implemented:** Added an AI-powered chatbot to the marketplace.
+  - **Features:**
+    - Provides information about NFTs (descriptions, prices, how to buy) using local data.
+    - Answers general questions and provides information about the "MUSEO DE ARTE CONTEMPORANEO DE QUINTANA ROO" using Google's Generative AI (Gemini 1.5 Flash model).
+    - Features a pleasant conversational tone and a user-friendly interface.
+    - Includes a visual typing indicator while fetching AI responses.
+  - **Technical Details:**
+    - Integrated the `@google/generative-ai` SDK.
+    - Requires a `VITE_GOOGLE_AI_API_KEY` in the `.env` file to function with Google AI.
+    - Chatbot UI styled to match the application's dark theme.
+  - **Status:** Chatbot is functional and integrated into the application.
+
 **2025-09-05:**
 - **NFT Descriptions Fixed:** Successfully implemented dynamic fetching and display of NFT descriptions in the `DropCard` component. Descriptions are now visible on the marketplace cards. This is a good checkpoint; the application is rendering correctly with this feature.
 - **Card Layout & Favicon:** Adjusted card layout for better desktop presentation (fixed 3-column grid). Full responsiveness for mobile/tablet column counts deferred. Favicon updated to use the primary "Unlockable Content Agency" logo.
