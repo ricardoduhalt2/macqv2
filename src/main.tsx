@@ -11,9 +11,9 @@ import './index.css';
 // TODO: Replace "YOUR_CLIENT_ID" with your actual client ID from thirdweb.com/dashboard for production
 // For local development, you can often proceed without it or use a placeholder if the SDK allows.
 // If you don't have one, some features might be rate-limited or use public RPCs.
-// Using the provided Client ID.
+// Using the environment variable for Client ID.
 export const client = createThirdwebClient({
-  clientId: "a37f843ccef648163abc82ab025e7cf7", 
+  clientId: import.meta.env.VITE_THIRDWEB_CLIENT_ID, 
 });
 
 createRoot(document.getElementById('root')!).render(
