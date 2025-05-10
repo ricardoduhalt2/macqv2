@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { nftData, type NftInfo } from '../data/nftData';
+import { nftData } from '../data/nftData';
 import './Chatbot.css';
 import { GoogleGenerativeAI, HarmCategory, HarmBlockThreshold } from '@google/generative-ai';
 
