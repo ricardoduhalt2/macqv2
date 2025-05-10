@@ -1,0 +1,294 @@
+:root {
+  --primary-color: #6a11cb;
+  --secondary-color: #2575fc;
+  --accent-color: #ff6b6b;
+  --turquoise-glow: #00f2ea; /* New turquoise color for glow */
+  --text-color: #f0f0f0;
+  --bg-color-start: #1a1a2e;
+  --bg-color-end: #16213e;
+  --card-bg: rgba(255, 255, 255, 0.05);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --input-bg: rgba(255, 255, 255, 0.1);
+  --input-border: rgba(255, 255, 255, 0.2);
+  --button-bg: var(--primary-color);
+  --button-hover-bg: var(--secondary-color);
+}
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
+  color: var(--text-color);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 2rem;
+  overflow-x: hidden; /* Prevent horizontal scroll from animations */
+  position: relative; /* For pseudo-element positioning */
+}
+
+body::before { /* Pseudo-element for background shifting light effect */
+  content: '';
+  position: fixed; /* Fixed to cover viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle at top left, rgba(var(--turquoise-glow-rgb, 0, 242, 234), 0.1), transparent 40%),
+              radial-gradient(circle at bottom right, rgba(var(--primary-color-rgb, 106, 17, 203), 0.15), transparent 50%);
+  background-size: 200% 200%;
+  animation: backgroundShift 20s linear infinite alternate;
+  z-index: -1; /* Behind all content */
+  opacity: 0.7;
+}
+
+@keyframes backgroundShift {
+  0% {
+    background-position: 0% 0%;
+  }
+  100% {
+    background-position: 100% 100%;
+  }
+}
+
+
+#root {
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 2rem;
+  text-align: center;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+  width: 100%;
+}
+
+.header {
+  margin-bottom: 2rem;
+  animation: fadeInDown 1s ease-out;
+}
+
+.header h1 {
+  /* font-size is now handled by Tailwind utility class in App.tsx */
+  font-weight: bold;
+  background: linear-gradient(45deg, var(--primary-color), var(--accent-color), var(--primary-color)); /* Added third color stop for smoother loop */
+  background-size: 200% auto; /* Make background larger than element to allow movement */
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 10px rgba(255, 107, 107, 0.3);
+  animation: animatedGradient 4s linear infinite; /* Apply animation */
+}
+
+@keyframes animatedGradient {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+.app-logo { /* New class for the main app logo */
+  transition: filter 0.3s ease-in-out;
+  animation: logoGlowPulse 5s infinite ease-in-out; /* Increased duration for slower animation */
+}
+
+@keyframes logoGlowPulse {
+  0%, 100% {
+    /* Whiter and smaller glow */
+    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 6px rgba(220, 220, 220, 0.4));
+    transform: scale(1);
+  }
+  50% {
+    /* Whiter, smaller, and slightly less intense pulse glow */
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 15px rgba(220, 220, 220, 0.5));
+    transform: scale(1.03); /* Reduced scale for a subtler pulse */
+  }
+}
+
+.logo { /* Existing .logo class, ensure it doesn't conflict or re-style if needed */
+  height: 6em;
+  padding: 1.5em;
+  will-change: filter;
+  transition: filter 300ms, transform 300ms ease-in-out;
+}
+.logo:hover {
+  filter: drop-shadow(0 0 2em #646cffaa);
+  transform: scale(1.1) rotate(5deg);
+}
+.logo.react:hover {
+  filter: drop-shadow(0 0 2em #61dafbaa);
+  transform: scale(1.1) rotate(-5deg);
+}
+
+.card-base {
+  background: var(--card-bg);
+  border-radius: 16px;
+  padding: 2rem;
+  border: 1px solid var(--card-border);
+  box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: fadeInUp 0.5s ease-out forwards;
+  opacity: 0; /* Start hidden for animation */
+}
+
+.card-base:hover {
+  transform: translateY(-10px) scale(1.02);
+  box-shadow: 0 0 25px 0px var(--turquoise-glow), 0 12px 40px 0 rgba(31, 38, 135, 0.5); /* Added turquoise glow */
+}
+
+/* Animation delay for staggered effect */
+.card-base:nth-child(1) { animation-delay: 0.1s; }
+.card-base:nth-child(2) { animation-delay: 0.2s; }
+.card-base:nth-child(3) { animation-delay: 0.3s; }
+/* Add more if needed */
+
+
+.input-field, .select-field {
+  background: var(--input-bg);
+  border: 1px solid var(--input-border);
+  color: var(--text-color);
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.input-field:focus, .select-field:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
+}
+
+.button-primary {
+  background-color: var(--button-bg);
+  color: white;
+  padding: 0.75rem 1.5rem;
+  border: none;
+  border-radius: 8px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.button-primary:hover {
+  background-color: var(--button-hover-bg);
+  transform: translateY(-2px);
+}
+
+.button-primary:active {
+  transform: translateY(0px);
+}
+
+.results-area {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: var(--card-bg);
+  border-radius: 12px;
+  border: 1px solid var(--card-border);
+  animation: fadeIn 1s ease-out 0.5s; /* Delay fadeIn for results */
+  animation-fill-mode: backwards; /* Apply styles before animation starts */
+  min-height: 100px; /* Ensure it has some height even when empty */
+}
+
+.results-area h3 {
+  color: var(--accent-color);
+  margin-bottom: 1rem;
+}
+
+.loading-spinner {
+  border: 4px solid rgba(255, 255, 255, 0.3);
+  border-left-color: var(--accent-color);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+  margin: 2rem auto;
+}
+
+.error-message {
+  color: #ff4d4d;
+  background-color: rgba(255, 77, 77, 0.1);
+  padding: 1rem;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 77, 77, 0.3);
+  margin-top: 1rem;
+}
+
+/* Keyframe Animations */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .header h1 {
+    font-size: 2.5rem;
+  }
+  .card-base {
+    padding: 1.5rem;
+  }
+  .input-field, .select-field, .button-primary {
+    font-size: 0.9rem;
+  }
+}
+
+.read-the-docs {
+  color: #aaa; /* Softer color for less important text */
+  margin-top: 2rem;
+  font-size: 0.9em;
+}
