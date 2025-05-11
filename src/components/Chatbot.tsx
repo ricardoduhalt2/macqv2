@@ -67,16 +67,10 @@ const Chatbot: React.FC = () => {
   const processUserMessage = async (userInput: string) => {
     const lowerInput = userInput.toLowerCase();
     let rawBotResponseText: string = "";
-
-    // --- Enhanced Local NFT Data Check ---
-
-    // 1. Try to identify an NFT name from the input first
-    let identifiedNftName: string | null = null;
     let potentialNftFromInput: typeof nftData[0] | undefined = undefined;
-
-    // Attempt to extract NFT name if keywords like "price", "cost", "usd", "description", "about", "buy" are present
     let searchStringForNftName = "";
 
+    // Specific pattern match first
     const priceQuerySpecificPattern = /how much is artwork in usd (.*)/i;
     const specificMatch = lowerInput.match(priceQuerySpecificPattern);
 
@@ -84,63 +78,46 @@ const Chatbot: React.FC = () => {
         searchStringForNftName = specificMatch[1].trim();
     } else {
         // Fallback to broader heuristic if specific pattern doesn't match
-        const keywords = ["price of", "cost of", "usd price of", "description of", "about", "buy", "how much is", "what is the price of", "tell me about"];
+        const keywordsToStrip = ["price of", "cost of", "usd price of", "description of", "about", "buy", "how much is", "what is the price of", "tell me about", "artwork", "in usd", "usd", "in", "the", "of", "an", "a", "is"];
         let tempSearchString = lowerInput;
         
-        // Find the keyword that appears latest in the string to get text after it
-        let lastKeywordIndex = -1;
-        let keywordLength = 0;
-        for (const keyword of keywords) {
-            const index = tempSearchString.lastIndexOf(keyword);
-            if (index > lastKeywordIndex) {
-                lastKeywordIndex = index;
-                keywordLength = keyword.length;
-            }
-        }
-
-        if (lastKeywordIndex !== -1) {
-            tempSearchString = tempSearchString.substring(lastKeywordIndex + keywordLength);
-        }
-        
-        // Remove common articles/prepositions and "artwork" that might interfere
-        tempSearchString = tempSearchString.replace(/\b(artwork|in usd|usd|in|the|of|an|a|is)\b/gi, "").replace(/\s\s+/g, ' ').trim();
-        searchStringForNftName = tempSearchString;
+        keywordsToStrip.forEach(keyword => {
+            // Using a regex with word boundaries for keywords to avoid partial matches within words
+            // and 'gi' for global, case-insensitive match
+            const regex = new RegExp(`\\b${keyword}\\b`, 'gi');
+            tempSearchString = tempSearchString.replace(regex, "");
+        });
+        searchStringForNftName = tempSearchString.replace(/\s\s+/g, ' ').trim(); // Remove extra spaces
     }
-
 
     if (searchStringForNftName) {
         potentialNftFromInput = nftData.find(
-            nft => nft.name.toLowerCase().includes(searchStringForNftName) || // NFT name contains the search string
-                   searchStringForNftName.includes(nft.name.toLowerCase()) || // Search string contains the NFT name
+            nft => nft.name.toLowerCase().includes(searchStringForNftName) ||
+                   searchStringForNftName.includes(nft.name.toLowerCase()) ||
                    nft.symbol.toLowerCase() === searchStringForNftName
         );
     }
     
-    // 2. If an NFT is identified, process related queries
     if (potentialNftFromInput) {
       const nft = potentialNftFromInput;
-      // Check for price/cost related terms specifically for this NFT
-      if (lowerInput.includes(nft.name.toLowerCase()) && (lowerInput.includes('price') || lowerInput.includes('cost') || lowerInput.includes('usd') || lowerInput.includes('how much'))) {
+      if (lowerInput.includes('price') || lowerInput.includes('cost') || lowerInput.includes('usd') || lowerInput.includes('how much')) {
         rawBotResponseText = `${nft.name} (${nft.symbol}) costs $${nft.usdPrice} USD.`;
-        if (nft.polPrice) { // Add POL price if available
+        if (nft.polPrice) {
             rawBotResponseText += ` / ${nft.polPrice} POL.`;
         }
-      } else if (lowerInput.includes(nft.name.toLowerCase()) && (lowerInput.includes('how to buy') || lowerInput.includes('buy'))) {
+      } else if (lowerInput.includes('how to buy') || lowerInput.includes('buy')) {
         rawBotResponseText = `To buy ${nft.name} (${nft.symbol}), you'll typically connect your crypto wallet to the marketplace and use MATIC (Polygon) or the equivalent USD value. Specific instructions are usually provided on the NFT's page or the marketplace's help section. General steps: 1. Ensure your wallet is funded. 2. Click the 'Buy' button for ${nft.name}. 3. Approve the transaction in your wallet.`;
       } else if (lowerInput.includes('description') || lowerInput.includes('about')) {
         rawBotResponseText = `${nft.name} (${nft.symbol}): ${nft.description}`;
       } else {
-        // Default response if NFT is mentioned but query is unclear
         rawBotResponseText = `I have information about ${nft.name} (${nft.symbol}). You can ask for its description, price in USD, or how to buy it.`;
       }
     }
 
-    // 3. List all NFTs if no specific NFT info was found yet and user asks for list
     if (!rawBotResponseText && (lowerInput.includes('list all nfts') || lowerInput.includes('show all nfts'))) {
       rawBotResponseText = "Here are all the available NFTs and their symbols: \n" + nftData.map(nft => `- ${nft.name} (${nft.symbol})`).join('\n');
     }
 
-    // --- Fallback to Google AI ---
     if (!rawBotResponseText) {
       if (!model) {
         rawBotResponseText = "I'm having trouble connecting to my knowledge base right now. Please try again later.";
@@ -164,7 +141,6 @@ const Chatbot: React.FC = () => {
       }
     }
     
-    // Remove asterisks from the final bot response and set state
     const finalBotResponseText = rawBotResponseText.replace(/\*/g, ''); 
     setIsTyping(false);
     setMessages(prevMessages => [...prevMessages, { text: finalBotResponseText, sender: 'bot' }]);
