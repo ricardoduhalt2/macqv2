@@ -15,7 +15,7 @@ function App() {
           <img
             src="https://petgascoin.com/wp-content/uploads/2025/05/Captura-de-Pantalla-2022-01-04-a-las-18.09.3-e1746994623535.webp"
             alt="UCA Logo"
-            className="app-logo w-16 h-auto mb-2" // Reduced width, margin bottom for logo
+            className="app-logo w-16 h-auto mt-12 mb-2" // Increased mt-8 to mt-12, Restored w-16, margin bottom for logo
           />
           {/* Apply .header h1 styles implicitly via App.css, font-size now from Tailwind class */}
           <h1 className="text-6xl">NFT Boutique</h1> {/* Changed text */}

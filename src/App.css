@@ -3,6 +3,8 @@
   --secondary-color: #2575fc;
   --accent-color: #ff6b6b;
   --turquoise-glow: #00f2ea; /* New turquoise color for glow */
+  --neon-pink: #ff00ff;
+  --neon-violet: #8f00ff;
   --text-color: #f0f0f0;
   --bg-color-start: #1a1a2e;
   --bg-color-end: #16213e;
@@ -105,19 +107,36 @@ body::before { /* Pseudo-element for background shifting light effect */
 
 .app-logo { /* New class for the main app logo */
   transition: filter 0.3s ease-in-out;
-  animation: logoGlowPulse 5s infinite ease-in-out; /* Increased duration for slower animation */
+  animation: neonBroadwayGlow 4s linear infinite; /* New animation */
+  /* width: 100px; */ /* Removed to restore original size via Tailwind */
+  height: auto;
 }
 
-@keyframes logoGlowPulse {
-  0%, 100% {
-    /* Whiter and smaller glow */
-    filter: drop-shadow(0 0 3px rgba(255, 255, 255, 0.5)) drop-shadow(0 0 6px rgba(220, 220, 220, 0.4));
+@keyframes neonBroadwayGlow {
+  0% { /* Pink -> Violet */
+    filter: drop-shadow(0 -1px 2px var(--neon-pink)) 
+            drop-shadow(0 -2px 3px var(--neon-violet));
     transform: scale(1);
   }
-  50% {
-    /* Whiter, smaller, and slightly less intense pulse glow */
-    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.7)) drop-shadow(0 0 15px rgba(220, 220, 220, 0.5));
-    transform: scale(1.03); /* Reduced scale for a subtler pulse */
+  25% { /* Violet -> Turquoise */
+    filter: drop-shadow(1px 0 2px var(--neon-violet)) 
+            drop-shadow(2px 0 3px var(--turquoise-glow));
+    transform: scale(1.01);
+  }
+  50% { /* Turquoise -> Pink */
+    filter: drop-shadow(0 1px 2px var(--turquoise-glow)) 
+            drop-shadow(0 2px 3px var(--neon-pink));
+    transform: scale(1.02);
+  }
+  75% { /* Pink -> Violet (again for smooth loop to turquoise) */
+    filter: drop-shadow(-1px 0 2px var(--neon-pink)) 
+            drop-shadow(-2px 0 3px var(--neon-violet));
+    transform: scale(1.01);
+  }
+  100% { /* Back to Pink -> Violet */
+    filter: drop-shadow(0 -1px 2px var(--neon-pink)) 
+            drop-shadow(0 -2px 3px var(--neon-violet));
+    transform: scale(1);
   }
 }
 
