@@ -10,9 +10,9 @@ function App() {
   return (
     // Use the new .app-container for overall layout and background
     <div className="app-container">
-      <header className="header w-full max-w-7xl flex justify-between items-center py-6 mb-10 px-4 sm:px-6 lg:px-8">
-        <div className="flex flex-col items-center text-center"> {/* Added flex container for logo and titles */}
-          <img 
+      <header className="header w-full max-w-7xl flex justify-between items-center py-6 mb-10 px-4 sm:px-6 lg:px-8"> {/* Restored justify-between */}
+        <div className="flex flex-col items-center text-center min-w-0 overflow-hidden"> {/* Added overflow-hidden */}
+          <img
             src="https://petgascoin.com/wp-content/uploads/2025/05/Captura-de-Pantalla-2022-01-04-a-las-18.09.3-e1746994623535.webp"
             alt="UCA Logo"
             className="app-logo w-16 h-auto mb-2" // Reduced width, margin bottom for logo
@@ -21,16 +21,20 @@ function App() {
           <h1 className="text-6xl">NFT Boutique</h1> {/* Changed text */}
           <h2 className="text-5xl mt-1">Marketplace</h2> {/* Added Marketplace subtitle, adjusted size & margin */}
           {/* Changed subtitle to h1 to match title style, adjusted margin, increased size */}
-          <div className="marquee-container mt-4">
-            <h1 className="text-4xl marquee-text">Arte Eterno Collection - Exhibiting at the Museum of Contemporary Art, Quintana Roo (MACQ)</h1> {/* Updated text and size */}
+          <div className="marquee-container mt-4"> {/* Uncommented marquee */}
+            <h1 className="text-4xl marquee-text">
+              Arte Eterno Collection - Exhibiting at the Museum of Contemporary Art, Quintana Roo (MACQ)&nbsp;&nbsp;&nbsp;&nbsp;Arte Eterno Collection - Exhibiting at the Museum of Contemporary Art, Quintana Roo (MACQ)
+            </h1>
           </div>
         </div>
-        <ConnectButton
-          client={client}
-          chain={polygon}
-          theme="dark" // Explicitly set dark theme for ConnectButton for consistency
-          connectModal={{ size: "compact" }} // Use compact modal
-        />
+        <div className="flex-shrink-0"> {/* Wrapper div for styling */}
+          <ConnectButton
+            client={client}
+            chain={polygon}
+            theme="dark" // Explicitly set dark theme for ConnectButton for consistency
+            connectModal={{ size: "compact" }} // Use compact modal
+          />
+        </div>
       </header>
 
       <main className="w-full max-w-7xl px-4 sm:px-6 lg:px-8"> {/* Reverted: max-w-7xl restored, grid classes on inner div */}
