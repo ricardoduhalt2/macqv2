@@ -21,7 +21,9 @@ function App() {
           <h1 className="text-6xl">NFT Boutique</h1> {/* Changed text */}
           <h2 className="text-5xl mt-1">Marketplace</h2> {/* Added Marketplace subtitle, adjusted size & margin */}
           {/* Changed subtitle to h1 to match title style, adjusted margin, increased size */}
-          <h1 className="text-4xl mt-4">Arte Eterno Collection - Exhibiting at the Museum of Contemporary Art, Quintana Roo (MACQ)</h1> {/* Updated text and size */}
+          <div className="marquee-container mt-4">
+            <h1 className="text-4xl marquee-text">Arte Eterno Collection - Exhibiting at the Museum of Contemporary Art, Quintana Roo (MACQ)</h1> {/* Updated text and size */}
+          </div>
         </div>
         <ConnectButton
           client={client}

@@ -292,3 +292,24 @@ body::before { /* Pseudo-element for background shifting light effect */
   margin-top: 2rem;
   font-size: 0.9em;
 }
+
+/* Marquee styles */
+.marquee-container {
+  width: 100%; /* Or a specific width if you prefer */
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+}
+
+.marquee-text {
+  display: inline-block;
+  padding-left: 100%; /* Start off-screen to the right */
+  animation: marquee 25s linear infinite;
+  /* Ensure text color is visible, inherits if not set */
+  /* text-4xl from Tailwind handles font size, Tailwind's mt-4 handles top margin */
+}
+
+@keyframes marquee {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-100%); } /* Move to the left by its own width + container width */
+}
