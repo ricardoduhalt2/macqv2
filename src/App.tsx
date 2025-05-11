@@ -13,14 +13,15 @@ function App() {
       <header className="header w-full max-w-7xl flex justify-between items-center py-6 mb-10 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center"> {/* Added flex container for logo and titles */}
           <img 
-            src="https://petgascoin.com/wp-content/uploads/2025/05/UCA-logo-fondo-blanco-horizontal-1-scaled-e1746841493573.png" 
-            alt="UCA Logo" 
-            className="app-logo w-24 h-auto mb-4" // Added app-logo class for animation
+            src="https://petgascoin.com/wp-content/uploads/2025/05/Captura-de-Pantalla-2022-01-04-a-las-18.09.3-e1746994623535.webp"
+            alt="UCA Logo"
+            className="app-logo w-16 h-auto mb-2" // Reduced width, margin bottom for logo
           />
           {/* Apply .header h1 styles implicitly via App.css, font-size now from Tailwind class */}
-          <h1 className="text-6xl">NFT Boutique Marketplace</h1> {/* Increased size */}
+          <h1 className="text-6xl">NFT Boutique</h1> {/* Changed text */}
+          <h2 className="text-5xl mt-1">Marketplace</h2> {/* Added Marketplace subtitle, adjusted size & margin */}
           {/* Changed subtitle to h1 to match title style, adjusted margin, increased size */}
-          <h1 className="text-6xl mt-2">Arte Eterno Museo de Arte Contemporáneo (MACQ)</h1> {/* Increased size */}
+          <h1 className="text-4xl mt-4">Arte Eterno Collection - Exhibiting at the Museum of Contemporary Art, Quintana Roo (MACQ)</h1> {/* Updated text and size */}
         </div>
         <ConnectButton
           client={client}
@@ -33,7 +34,7 @@ function App() {
       <main className="w-full max-w-7xl px-4 sm:px-6 lg:px-8"> {/* Reverted: max-w-7xl restored, grid classes on inner div */}
         {/* Apply .card-base to each DropCard for the new card styling and animations */}
         {/* Reverted to simplified 3-column layout for desktop stability */}
-        <div className="grid grid-cols-3 gap-8">
+        <div className="grid grid-cols-3 gap-16"> {/* Increased gap from gap-12 to gap-16 */}
           {allNftsData.map((nft) => (
             <div key={nft.id} className="card-base"> {/* Wrap DropCard in a div with .card-base */}
               <DropCard nft={nft} client={client} />

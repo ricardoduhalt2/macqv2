@@ -66,62 +66,108 @@ const Chatbot: React.FC = () => {
 
   const processUserMessage = async (userInput: string) => {
     const lowerInput = userInput.toLowerCase();
-    let botResponseText: string;
+    let rawBotResponseText: string = "";
 
-    // Prioritize local NFT data
-    const foundNft = nftData.find(
-      nft => nft.name.toLowerCase().includes(lowerInput) || nft.symbol.toLowerCase() === lowerInput || lowerInput.includes(nft.symbol.toLowerCase())
-    );
+    // --- Enhanced Local NFT Data Check ---
 
-    if (foundNft) {
-      if (lowerInput.includes('how to buy') || lowerInput.includes('buy')) {
-        botResponseText = `To buy ${foundNft.name} (${foundNft.symbol}), you'll typically connect your crypto wallet to the marketplace and use MATIC (Polygon) or the equivalent USD value. Specific instructions are usually provided on the NFT's page or the marketplace's help section. General steps: 1. Ensure your wallet is funded. 2. Click the 'Buy' button for ${foundNft.name}. 3. Approve the transaction in your wallet.`;
-      } else if (lowerInput.includes('description') || lowerInput.includes('about') || lowerInput.includes(foundNft.name.toLowerCase())) {
-        botResponseText = `${foundNft.name} (${foundNft.symbol}): ${foundNft.description}`;
-      } else if (lowerInput.includes('price') || lowerInput.includes('cost')) {
-        botResponseText = `${foundNft.name} (${foundNft.symbol}) costs $${foundNft.usdPrice} USD or ${foundNft.polPrice} POL.`;
+    // 1. Try to identify an NFT name from the input first
+    let identifiedNftName: string | null = null;
+    let potentialNftFromInput: typeof nftData[0] | undefined = undefined;
+
+    // Attempt to extract NFT name if keywords like "price", "cost", "usd", "description", "about", "buy" are present
+    let searchStringForNftName = "";
+
+    const priceQuerySpecificPattern = /how much is artwork in usd (.*)/i;
+    const specificMatch = lowerInput.match(priceQuerySpecificPattern);
+
+    if (specificMatch && specificMatch[1]) {
+        searchStringForNftName = specificMatch[1].trim();
+    } else {
+        // Fallback to broader heuristic if specific pattern doesn't match
+        const keywords = ["price of", "cost of", "usd price of", "description of", "about", "buy", "how much is", "what is the price of", "tell me about"];
+        let tempSearchString = lowerInput;
+        
+        // Find the keyword that appears latest in the string to get text after it
+        let lastKeywordIndex = -1;
+        let keywordLength = 0;
+        for (const keyword of keywords) {
+            const index = tempSearchString.lastIndexOf(keyword);
+            if (index > lastKeywordIndex) {
+                lastKeywordIndex = index;
+                keywordLength = keyword.length;
+            }
+        }
+
+        if (lastKeywordIndex !== -1) {
+            tempSearchString = tempSearchString.substring(lastKeywordIndex + keywordLength);
+        }
+        
+        // Remove common articles/prepositions and "artwork" that might interfere
+        tempSearchString = tempSearchString.replace(/\b(artwork|in usd|usd|in|the|of|an|a|is)\b/gi, "").replace(/\s\s+/g, ' ').trim();
+        searchStringForNftName = tempSearchString;
+    }
+
+
+    if (searchStringForNftName) {
+        potentialNftFromInput = nftData.find(
+            nft => nft.name.toLowerCase().includes(searchStringForNftName) || // NFT name contains the search string
+                   searchStringForNftName.includes(nft.name.toLowerCase()) || // Search string contains the NFT name
+                   nft.symbol.toLowerCase() === searchStringForNftName
+        );
+    }
+    
+    // 2. If an NFT is identified, process related queries
+    if (potentialNftFromInput) {
+      const nft = potentialNftFromInput;
+      // Check for price/cost related terms specifically for this NFT
+      if (lowerInput.includes(nft.name.toLowerCase()) && (lowerInput.includes('price') || lowerInput.includes('cost') || lowerInput.includes('usd') || lowerInput.includes('how much'))) {
+        rawBotResponseText = `${nft.name} (${nft.symbol}) costs $${nft.usdPrice} USD.`;
+        if (nft.polPrice) { // Add POL price if available
+            rawBotResponseText += ` / ${nft.polPrice} POL.`;
+        }
+      } else if (lowerInput.includes(nft.name.toLowerCase()) && (lowerInput.includes('how to buy') || lowerInput.includes('buy'))) {
+        rawBotResponseText = `To buy ${nft.name} (${nft.symbol}), you'll typically connect your crypto wallet to the marketplace and use MATIC (Polygon) or the equivalent USD value. Specific instructions are usually provided on the NFT's page or the marketplace's help section. General steps: 1. Ensure your wallet is funded. 2. Click the 'Buy' button for ${nft.name}. 3. Approve the transaction in your wallet.`;
+      } else if (lowerInput.includes('description') || lowerInput.includes('about')) {
+        rawBotResponseText = `${nft.name} (${nft.symbol}): ${nft.description}`;
       } else {
-        botResponseText = `I found ${foundNft.name} (${foundNft.symbol}). What would you like to know about it? You can ask for its description, price, or how to buy it.`;
+        // Default response if NFT is mentioned but query is unclear
+        rawBotResponseText = `I have information about ${nft.name} (${nft.symbol}). You can ask for its description, price in USD, or how to buy it.`;
       }
-      setIsTyping(false);
-      setMessages(prevMessages => [...prevMessages, { text: botResponseText, sender: 'bot' }]);
-      return;
-    }
-    
-    if (lowerInput.includes('list all nfts') || lowerInput.includes('show all nfts')) {
-        botResponseText = "Here are all the available NFTs and their symbols: \n" + nftData.map(nft => `- ${nft.name} (${nft.symbol})`).join('\n');
-        setIsTyping(false);
-        setMessages(prevMessages => [...prevMessages, { text: botResponseText, sender: 'bot' }]);
-        return;
     }
 
-    // If not found locally or a general query, use Google AI
-    if (!model) {
-      botResponseText = "I'm having trouble connecting to my knowledge base right now. Please try again later.";
-      setIsTyping(false);
-      setMessages(prevMessages => [...prevMessages, { text: botResponseText, sender: 'bot' }]);
-      return;
+    // 3. List all NFTs if no specific NFT info was found yet and user asks for list
+    if (!rawBotResponseText && (lowerInput.includes('list all nfts') || lowerInput.includes('show all nfts'))) {
+      rawBotResponseText = "Here are all the available NFTs and their symbols: \n" + nftData.map(nft => `- ${nft.name} (${nft.symbol})`).join('\n');
     }
 
-    try {
-      const chat = model.startChat({
-        generationConfig,
-        safetySettings,
-        history: [
-          { role: "user", parts: [{ text: "You are a friendly and helpful assistant for an NFT marketplace and the MUSEO DE ARTE CONTEMPORANEO DE QUINTANA ROO. Be pleasant and informative." }] },
-          { role: "model", parts: [{ text: "Understood! I'm ready to help with information about our beautiful NFTs and the wonderful MUSEO DE ARTE CONTEMPORANEO DE QUINTANA ROO. How can I assist you today?" }] },
-        ],
-      });
-      const result = await chat.sendMessage(userInput);
-      const response = result.response;
-      botResponseText = response.text();
-    } catch (error) {
-      console.error("Error calling Google AI:", error);
-      botResponseText = "I encountered an issue while trying to get that information. Please try asking in a different way.";
+    // --- Fallback to Google AI ---
+    if (!rawBotResponseText) {
+      if (!model) {
+        rawBotResponseText = "I'm having trouble connecting to my knowledge base right now. Please try again later.";
+      } else {
+        try {
+          const chat = model.startChat({
+            generationConfig,
+            safetySettings,
+            history: [
+              { role: "user", parts: [{ text: "You are a friendly and helpful assistant for an NFT marketplace and the MUSEO DE ARTE CONTEMPORANEO DE QUINTANA ROO. Be pleasant and informative. Prioritize information from the provided NFT data if the question is about specific NFTs, their prices, descriptions, or how to buy them. Only use general knowledge for other topics or if local data is insufficient." }] },
+              { role: "model", parts: [{ text: "Understood! I'm ready to help with information about our beautiful NFTs and the wonderful MUSEO DE ARTE CONTEMPORANEO DE QUINTANA ROO. How can I assist you today? I'll use my specific knowledge about the listed NFTs first." }] },
+            ],
+          });
+          const result = await chat.sendMessage(userInput);
+          const response = result.response;
+          rawBotResponseText = response.text();
+        } catch (error) {
+          console.error("Error calling Google AI:", error);
+          rawBotResponseText = "I encountered an issue while trying to get that information. Please try asking in a different way.";
+        }
+      }
     }
     
+    // Remove asterisks from the final bot response and set state
+    const finalBotResponseText = rawBotResponseText.replace(/\*/g, ''); 
     setIsTyping(false);
-    setMessages(prevMessages => [...prevMessages, { text: botResponseText, sender: 'bot' }]);
+    setMessages(prevMessages => [...prevMessages, { text: finalBotResponseText, sender: 'bot' }]);
   };
 
   if (!isOpen) {

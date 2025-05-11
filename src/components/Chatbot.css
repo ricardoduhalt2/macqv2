@@ -139,34 +139,42 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
+  align-items: center; /* Center messages horizontally */
 }
 
 .message {
   padding: 10px 15px;
   border-radius: 18px;
-  max-width: 85%;
+  max-width: 85%; /* Keep max-width for readability */
+  width: fit-content; /* Allow bubble to size to content, up to max-width */
   word-wrap: break-word;
   line-height: 1.5;
   font-size: 14px;
+  /* Ensure messages align to their respective sides if align-items: center is too aggressive */
 }
 
 .message.user {
   background-color: var(--primary-color, #6a11cb);
   color: var(--text-color, #f0f0f0);
-  align-self: flex-end;
+  align-self: flex-end; /* Override parent's align-items for user messages */
   border-bottom-right-radius: 6px;
+  margin-left: auto; /* Push to the right */
+  margin-right: 0; /* Ensure no extra right margin */
 }
 
 .message.bot {
   background-color: var(--input-bg, rgba(255, 255, 255, 0.1));
   color: var(--text-color, #f0f0f0);
-  align-self: flex-start;
+  align-self: flex-start; /* Override parent's align-items for bot messages */
   border-bottom-left-radius: 6px;
   border: 1px solid var(--card-border, rgba(255,255,255,0.05));
+  margin-right: auto; /* Push to the left */
+  margin-left: 0; /* Ensure no extra left margin */
 }
 
 .message p {
   margin: 0;
+  text-align: left; /* Ensure text within bubbles is left-aligned */
 }
 
 .chatbot-input {

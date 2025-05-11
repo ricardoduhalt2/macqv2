@@ -139,7 +139,7 @@ body::before { /* Pseudo-element for background shifting light effect */
 .card-base {
   background: var(--card-bg);
   border-radius: 16px;
-  padding: 2rem;
+  padding: 1.5rem; /* Reduced padding from 2rem to 1.5rem */
   border: 1px solid var(--card-border);
   box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
   backdrop-filter: blur(4px);

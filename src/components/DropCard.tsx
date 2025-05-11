@@ -15,6 +15,16 @@ const DropCard: React.FC<DropCardProps> = ({ nft, client }) => {
   const [fetchedDescription, setFetchedDescription] = useState<string | undefined>(undefined);
   const [isLoadingDescription, setIsLoadingDescription] = useState<boolean>(true);
   const [errorDescription, setErrorDescription] = useState<string | null>(null);
+  const [isCopied, setIsCopied] = useState(false);
+
+  const handleCopy = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+    }).catch(err => {
+      console.error('Failed to copy: ', err);
+    });
+  };
 
   useEffect(() => {
     const fetchNftDescription = async () => {
@@ -45,9 +55,9 @@ const DropCard: React.FC<DropCardProps> = ({ nft, client }) => {
     };
 
     fetchNftDescription();
-  }, [nft.editionContractAddress, client]); // Removed nft.tokenUri as contractAddress is key for getContract
+  }, [nft.editionContractAddress, client]);
 
-  const displaySplitRecipient = nft.splitContractAddress;
+  const contractAddressToDisplay = nft.editionContractAddress;
 
   return (
     <div className="group overflow-hidden h-full flex flex-col">
@@ -78,9 +88,16 @@ const DropCard: React.FC<DropCardProps> = ({ nft, client }) => {
           <p className="text-lg font-semibold text-cyan-400"> {/* Price color updated */}
             {nft.price ? nft.price : 'N/A'} {nft.currencySymbol}
           </p>
-          <p className="text-xs text-slate-400 mt-1 truncate" title={`Split: ${displaySplitRecipient}`}> {/* Split contract text color updated */}
-            Revenue Split: {displaySplitRecipient.substring(0, 6)}...{displaySplitRecipient.substring(displaySplitRecipient.length - 4)}
-          </p>
+          <div className="text-xs text-slate-400 mt-1 flex items-center" title={`Contract: ${contractAddressToDisplay}`}>
+            <span>Contract: {contractAddressToDisplay.substring(0, 6)}...{contractAddressToDisplay.substring(contractAddressToDisplay.length - 4)}</span>
+            <button 
+              onClick={() => handleCopy(contractAddressToDisplay)}
+              className="ml-2 p-1 rounded bg-transparent hover:bg-transparent border border-slate-600 hover:border-slate-500 transition-all shadow-sm hover:shadow-md focus:outline-none focus:ring-2 focus:ring-cyan-500 text-sm"
+              aria-label="Copy contract address"
+            >
+              {isCopied ? 'Copied!' : '📋'}
+            </button>
+          </div>
         </div>
         
         {/* Spacer div to push button to the bottom */}
