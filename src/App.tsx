@@ -13,7 +13,7 @@ function App() {
       <header className="header w-full max-w-7xl flex justify-between items-center py-6 mb-10 px-4 sm:px-6 lg:px-8"> {/* Restored justify-between */}
         <div className="flex flex-col items-center text-center min-w-0 overflow-hidden"> {/* Added overflow-hidden */}
           <img
-            src="https://petgascoin.com/wp-content/uploads/2025/05/Captura-de-Pantalla-2022-01-04-a-las-18.09.3-e1746994623535.webp"
+            src="https://petgascoin.com/wp-content/uploads/2025/05/UCA-logo-fondo-blanco-horizontal-1-scaled-e1746841493573.png"
             alt="UCA Logo"
             className="app-logo w-16 h-auto mt-12 mb-2" // Increased mt-8 to mt-12, Restored w-16, margin bottom for logo
           />

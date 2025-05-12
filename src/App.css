@@ -107,36 +107,21 @@ body::before { /* Pseudo-element for background shifting light effect */
 
 .app-logo { /* New class for the main app logo */
   transition: filter 0.3s ease-in-out;
-  animation: neonBroadwayGlow 4s linear infinite; /* New animation */
+  animation: neonHeartbeat 12s ease-in-out infinite; /* New animation */
   /* width: 100px; */ /* Removed to restore original size via Tailwind */
   height: auto;
 }
 
-@keyframes neonBroadwayGlow {
-  0% { /* Pink -> Violet */
-    filter: drop-shadow(0 -1px 2px var(--neon-pink)) 
-            drop-shadow(0 -2px 3px var(--neon-violet));
+@keyframes neonHeartbeat {
+  0%, 100% {
+    filter: drop-shadow(0 0 1px #ffffff)
+            drop-shadow(0 0 2px #ffffff);
     transform: scale(1);
   }
-  25% { /* Violet -> Turquoise */
-    filter: drop-shadow(1px 0 2px var(--neon-violet)) 
-            drop-shadow(2px 0 3px var(--turquoise-glow));
-    transform: scale(1.01);
-  }
-  50% { /* Turquoise -> Pink */
-    filter: drop-shadow(0 1px 2px var(--turquoise-glow)) 
-            drop-shadow(0 2px 3px var(--neon-pink));
-    transform: scale(1.02);
-  }
-  75% { /* Pink -> Violet (again for smooth loop to turquoise) */
-    filter: drop-shadow(-1px 0 2px var(--neon-pink)) 
-            drop-shadow(-2px 0 3px var(--neon-violet));
-    transform: scale(1.01);
-  }
-  100% { /* Back to Pink -> Violet */
-    filter: drop-shadow(0 -1px 2px var(--neon-pink)) 
-            drop-shadow(0 -2px 3px var(--neon-violet));
-    transform: scale(1);
+  50% {
+    filter: drop-shadow(0 0 3px var(--turquoise-glow))
+            drop-shadow(0 0 6px var(--neon-pink));
+    transform: scale(1.05); /* Subtle pulse */
   }
 }
 
@@ -244,15 +229,6 @@ body::before { /* Pseudo-element for background shifting light effect */
   height: 40px;
   animation: spin 1s linear infinite;
   margin: 2rem auto;
-}
-
-.error-message {
-  color: #ff4d4d;
-  background-color: rgba(255, 77, 77, 0.1);
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 77, 77, 0.3);
-  margin-top: 1rem;
 }
 
 /* Keyframe Animations */
