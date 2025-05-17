@@ -60,7 +60,7 @@ const DropCard: React.FC<DropCardProps> = ({ nft, client }) => {
   const contractAddressToDisplay = nft.editionContractAddress;
 
   return (
-    <div className="group overflow-hidden h-full flex flex-col">
+    <div className="group overflow-hidden h-[400px] flex flex-col">
       <div className="aspect-square w-full overflow-hidden rounded-t-lg">
         <MediaRenderer
           client={client}
@@ -80,7 +80,7 @@ const DropCard: React.FC<DropCardProps> = ({ nft, client }) => {
         ) : (
           fetchedDescription && (
             <p className="text-slate-400 text-sm mb-3">
-              {fetchedDescription}
+              {fetchedDescription.substring(0, 50)}...
             </p>
           )
         )}
