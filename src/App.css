@@ -113,20 +113,15 @@ body::before { /* Pseudo-element for background shifting light effect */
 }
 
 @keyframes neonHeartbeat {
-  0% {
-    filter: drop-shadow(0 0 1px var(--neon-pink))
-            drop-shadow(0 0 2px var(--neon-violet));
-    transform: scale(1);
-  }
+  0%, 100% {
+  filter: drop-shadow(0 0 1px #ffffff)
+          drop-shadow(0 0 2px #ffffff);
+  transform: scale(1);
+}
   50% {
     filter: drop-shadow(0 0 3px var(--turquoise-glow))
             drop-shadow(0 0 6px var(--neon-pink));
     transform: scale(1.05); /* Subtle pulse */
-  }
-  100% { /* Thinner and white glow at the end */
-    filter: drop-shadow(0 0 1px #ffffff)
-            drop-shadow(0 0 2px #ffffff);
-    transform: scale(1);
   }
 }
 
@@ -234,15 +229,6 @@ body::before { /* Pseudo-element for background shifting light effect */
   height: 40px;
   animation: spin 1s linear infinite;
   margin: 2rem auto;
-}
-
-.error-message {
-  color: #ff4d4d;
-  background-color: rgba(255, 77, 77, 0.1);
-  padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid rgba(255, 77, 77, 0.3);
-  margin-top: 1rem;
 }
 
 /* Keyframe Animations */

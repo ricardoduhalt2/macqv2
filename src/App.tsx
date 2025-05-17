@@ -13,9 +13,9 @@ function App() {
       <header className="header w-full max-w-7xl flex flex-col items-center py-6 mb-10 px-4 sm:px-6 lg:px-8">
         <div className="flex flex-col items-center text-center min-w-0 overflow-hidden">
           <img
-            src="https://petgascoin.com/wp-content/uploads/2025/05/Unlockable-Content-Agency.png"
+            src="https://petgascoin.com/wp-content/uploads/2025/05/UCA-logo-fondo-blanco-horizontal-1-scaled-e1746841493573.png"
             alt="UCA Logo"
-            className="app-logo w-8 h-auto mt-12 mb-2"
+            className="app-logo w-16 h-auto mt-12 mb-2" // Increased mt-8 to mt-12, Restored w-16, margin bottom for logo
           />
           <h1 className="text-6xl">NFT Boutique</h1>
           <h2 className="text-5xl mt-1">Marketplace Mobile</h2>
